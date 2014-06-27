@@ -1,4 +1,6 @@
-autoit_lib
+AutoIT Library
 ==========
 
-Library for common AutoIt tasks.
+A library for common AutoIt tasks.
+
+See doc.md for proper documentation on the functions available.
