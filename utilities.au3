@@ -157,7 +157,7 @@ EndFunc
 
 Func getFromExcel($file_name, $col, $row)
    activateExcel($file_name)
-   gotoCellExcel($row, $col)
+   gotoCellExcel($col, $row)
    Send("^c")
    Return clipget()
 EndFunc
@@ -165,7 +165,7 @@ EndFunc
 Func getArrayFromColExcel($file, $col, $start, $end)
 	activateExcel($file)
 	Local $arr[$end-$start+1]
-	gotoCellExcel($start, $col)
+	gotoCellExcel($col, $start)
 	For $i = 0 To $end-$start
 		Send("^c")
 		$arr[$i] = StringReplace(clipget(),@CRLF,"")
@@ -177,12 +177,12 @@ EndFunc
 
 Func getLastRowInColExcel($file, $col, $start)
 	activateExcel($file)
-	gotoCellExcel($start,$col)
+	gotoCellExcel($col, $start)
 	Send("^{DOWN}")
 	; Return ThisRow
 EndFunc	
 
-Func gotoCellExcel($row, $col)
+Func gotoCellExcel($col, $row)
 	Send("{F5}" & $col & $row & "{ENTER}")
 EndFunc
 
@@ -220,7 +220,7 @@ EndFunc
 
 Func pasteInExcel($file, $col, $row)
 	activateExcel($file)
-	gotoCellExcel($row, $col)
+	gotoCellExcel($col, $row)
 	Send("^v")
 EndFunc
 
