@@ -188,21 +188,61 @@ EndFunc
 
 Func putInExcel($val, $file_name, $col, $row)
 	activateExcel($file_name)
-	Send("{F5}" & $col & $row & "{ENTER}")
+	gotoCellExcel($row, $col)
 	Send($val&"{ENTER}")
 EndFunc
 
 Func putArrayInColExcel($arr, $file, $col, $start)
 	activateExcel($file)
 	$len = UBound($arr)
-	
-Send("{F5}" & $col & $start & "{ENTER}")
+	gotoCellExcel($start, $col)	
 	For $i = 0 To $len-1
 		Send($arr[$i])
 		Send("{ENTER}")
 	Next
 	
 	Return $arr
+EndFunc
+
+Func copyRangeFromExcel($file, $start_col, $start_row, $end_col, $end_row)
+	activateExcel($file)
+	$width = ltr2num($end_col) - ltr2num($start_col) 
+	$height = $end_row - $start_row
+	gotoCellExcel($start_row, $start_col)
+	For $i = 0 To $width - 1
+		Send("+{RIGHT}")
+	Next
+	For $i = 0 To $height - 1
+		Send("+{DOWN}")
+	Next
+	Send("^c")
+EndFunc
+
+Func pasteInExcel($file, $col, $row)
+	activateExcel($file)
+	gotoCellExcel($row, $col)
+	Send("^v")
+EndFunc
+
+Func ltr2num($letter)
+	$sum = 0
+	$mult = 0
+	$alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	$chars = StringSplit($letter, "")
+	$len = $chars[0]
+	For $i = $len To 1 Step -1
+		; Alert($i)
+		$cval = StringInStr($alpha, $chars[$i])
+		; Alert($cval)
+		$sum += $cval * ( 26 ^ $mult )
+		$mult += 1
+	Next
+	Return $sum
+EndFunc
+
+Func sortExcelCol($col)
+	gotoCellExcel(1, $col)
+	Send("!hss")
 EndFunc
 
 ; --------------------------------
