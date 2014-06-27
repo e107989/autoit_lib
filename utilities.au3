@@ -1,23 +1,35 @@
-; --------------------------------
-; Wizard Functions
-; --------------------------------
 
-; Change these in a script if they 
-; change in the Wizard title
+;; # Wizard Functions
+
 $TEST_WIZARD = False
 
+;; $wiz_letter : The letter in the title bar, usually A or B
+;; $wiz_ip : The address, examples are 'MainframeA' and '172.26.20.244'
+;; Return: A string containing the current contents of the specified wizard screen.
 Func getWizardScreen($wiz_letter="", $wiz_ip="172.26.20.244")
 	activateWizard($wiz_letter, $wiz_ip)
 	Send("!{F10}^c")
 	Return clipget()   
 EndFunc
 
+;; Desc : Send a string of keys to wizard and wait for the screen to change. 
+;; $key : The key string to send.
+;; $timeout : How long to wait in milliseconds.
+;; $wiz_letter : The letter in the title bar, usually A or B
+;; $wiz_ip : The address, examples are 'MainframeA' and '172.26.20.244'
+;; Return : True if wizard responded. False if timeout reached.
 Func sendWaitWizard($key, $timeout=5000, $wiz_letter="", $wiz_ip="")
 	Local $screen = getWizardScreen($wiz_letter, $wiz_ip)
 	Send($key)
 	Return waitForWizard($screen, $timeout, $wiz_letter, $wiz_ip)
 EndFunc
 
+;; Desc : Get some text from a wizard screen. $row, $col, and $len may be passed as a single argument in an array.
+;; $screen : A string representing the wizard screen.
+;; $row : The row to get from.
+;; $col : The column of the first character.
+;; $len : The length of the string to get, including the first character.
+;; Return : The string at the location described.
 Func getFromWizardScreen($screen, $row, $col=-1, $len=-1)
 	; Function overloading....
 	If $len == -1 Then
@@ -26,7 +38,6 @@ Func getFromWizardScreen($screen, $row, $col=-1, $len=-1)
 		$row = $row[0]
 	EndIf
 
-	; _Log($row&" "&$col&" "&$len, "TRB")
 	Local $lines = StringSplit($screen,@CRLF,1)
 	Local $line = StringSplit($lines[$row],"")
 	Local $max_length = UBound($line)
@@ -42,6 +53,10 @@ Func getFromWizardScreen($screen, $row, $col=-1, $len=-1)
 	Return $output	
 EndFunc
 
+;; Desc : Search for a string in a wizard screen.
+;; $screen : A string representing the wizard screen.
+;; $string : The string to search find.
+;; Return : The [row, col] of the string in the screen. [-1, -1] if not found.
 Func searchForInWizardScreen($screen, $string)
 	Local $lines = StringSplit($screen,@CRLF,1), $loc[2] = [-1, -1]
 	For $i = 0 To UBound($lines)-1
