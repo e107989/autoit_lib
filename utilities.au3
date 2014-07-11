@@ -61,9 +61,13 @@ Func getFromWizardScreen($screen, $row, $col=-1, $len=-1)
 	Return $output	
 EndFunc
 
-; Desc : Search for a string in a wizard screen.
+; Desc : Search for a string in a wizard screen. Defaults to whole screen, parameters are inclusive.
 ; $screen : A string representing the wizard screen.
 ; $string : The string to search find.
+; $start_row : The row of the screen to start searching in.
+; $start_col : The column of the screen to start searching in.
+; $end_row : The row of the screen to stop searching in.
+; $end_col : The column of the screen to stop searching in.
 ; Return : The [row, col] of the first occurence of the string in the screen. [-1, -1] if not found.
 Func searchForInWizardScreen($screen, $string, $start_row=1, $start_col=1, $end_row=-1, $end_col=-1)
 	Local $lines = StringSplit($screen,@CRLF,1), $loc[2] = [-1, -1]
