@@ -1,3 +1,4 @@
+#include <String.au3>
 
 ;; # Wizard Functions
 
@@ -22,6 +23,13 @@ Func sendWaitWizard($key, $timeout=5000, $wiz_letter="", $wiz_ip="")
 	Local $screen = getWizardScreen($wiz_letter, $wiz_ip)
 	Send($key)
 	Return waitForWizard($screen, $timeout, $wiz_letter, $wiz_ip)
+EndFunc
+
+;; Desc : Send a string multiple times
+;; $string : The string to send.
+;; $rpt : How many times to send it.
+Func SendRpt($string, $rpt)
+	Send(_StringRepeat($string,$rpt))
 EndFunc
 
 ;; Desc : Get some text from a wizard screen. $row, $col, and $len may be passed as a single argument in an array.
@@ -53,14 +61,24 @@ Func getFromWizardScreen($screen, $row, $col=-1, $len=-1)
 	Return $output	
 EndFunc
 
-;; Desc : Search for a string in a wizard screen.
-;; $screen : A string representing the wizard screen.
-;; $string : The string to search find.
-;; Return : The [row, col] of the string in the screen. [-1, -1] if not found.
-Func searchForInWizardScreen($screen, $string)
+; Desc : Search for a string in a wizard screen.
+; $screen : A string representing the wizard screen.
+; $string : The string to search find.
+; Return : The [row, col] of the first occurence of the string in the screen. [-1, -1] if not found.
+Func searchForInWizardScreen($screen, $string, $start_row=1, $start_col=1, $end_row=-1, $end_col=-1)
 	Local $lines = StringSplit($screen,@CRLF,1), $loc[2] = [-1, -1]
-	For $i = 0 To UBound($lines)-1
-		$in_line = StringInStr($lines[$i], $string)
+
+	If $end_row > UBound($lines)-1 Or $end_row == -1 Then
+		$end_row = UBound($lines)-1
+	EndIf
+
+	For $i = $start_row To $end_row
+		If $end_col == -1 Then
+			$in_line = StringInStr($lines[$i], $string, 1, 1, $start_col)
+		Else
+			$in_line = StringInStr($lines[$i], $string, 1, 1, $start_col, $end_col-$start_col+1)
+		EndIf
+
 		If $in_line <> 0 Then
 			$loc[0] = $i 
 			$loc[1] = $in_line 
@@ -112,6 +130,13 @@ Func checkWizardText($text, $wiz_screen, $row, $col)
 	Return getFromWizardScreen($wiz_screen, $row, $col, StringLen($text)) == $text
 EndFunc
 
+;; Desc : Search for a value in one array and return a value from another array at the same index.
+;; $screen : A string representing the wizard screen.
+;; $lookup_val : The value to find in `$src_col`.
+;; $src_col : The array that will be searched for `$lookup_val`.
+;; $out_col : The array that a value will be returned from.
+;; $position : Optional. If True, returns the index of the value, not the value itself.
+;; Return : The value from `$out_col` that has the same index as `$lookup_val` in `$src_col` or the index if `$position` is True.
 Func vlookupWizard($screen, $lookup_val, $src_col, $out_col, $position=False)
 	If UBound($src_col) > UBound($out_col) Then
 		If $position Then

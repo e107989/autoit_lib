@@ -1,6 +1,4 @@
 #include "utilities.au3"
 
-; queryTrax("SELECT SUM(QTY_AVAILABLE * UNIT_COST) FROM ODB.PN_INVENTORY_DETAIL WHERE LOCATION='IND-AAR';", "indaar.dat")
-; copyRangeFromExcel("Book4", "A", "1", "AFP", "795")
-
-SELECT SUM(QTY*UNIT_COST) FROM ODB.PN_INVENTORY_HISTORY WHERE (LOCATION = 'NZC' AND CREATED_DATE > TO_DATE('01-JUN-2014 12:00 A.M.', 'dd-MON-yyyy HH:MI A.M.') AND CREATED_DATE < TO_DATE('02-JUN-2014 12:00 A.M.', 'dd-MON-yyyy HH:MI A.M.')) ORDER BY AC, CREATED_DATE
+$test_str = "abcd123"&@CRLF&"efgh456"&@CRLF&"ijkl789"&@CRLF&"mnop101"
+AlertArray(searchForInWizardScreen($test_str, "op", 2, 1, 4, 3))
