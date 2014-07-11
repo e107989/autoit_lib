@@ -163,6 +163,26 @@ Func waitForWizard($old_screen, $max_delay=5000, $wiz_letter="", $wiz_ip="")
 EndFunc
 
 ; --------------------------------
+; PL/SQL Developer
+; --------------------------------
+
+Func activatePLSQL()
+	WinWaitActivate("PL/SQL Developer - TRAX_RPT_USER@TRAX3EP")
+EndFunc
+
+Func newQueryWindowPLSQL()
+	Send("!fns")
+EndFunc
+
+Func getQueryInvBal($station)
+	Return "SELECT SUM(QTY_AVAILABLE * UNIT_COST) FROM ODB.PN_INVENTORY_DETAIL WHERE LOCATION='" & $station & "'"
+EndFunc
+
+Func executeQuery($q)
+	Send($q & "{F8}")
+EndFunc
+
+; --------------------------------
 ; Excel Functions
 ; --------------------------------
 
@@ -203,14 +223,14 @@ EndFunc
 
 Func putInExcel($val, $file_name, $col, $row)
 	activateExcel($file_name)
-	gotoCellExcel($row, $col)
+	gotoCellExcel($col, $row)
 	Send($val&"{ENTER}")
 EndFunc
 
 Func putArrayInColExcel($arr, $file, $col, $start)
 	activateExcel($file)
 	$len = UBound($arr)
-	gotoCellExcel($start, $col)	
+	gotoCellExcel($col, $start)	
 	For $i = 0 To $len-1
 		Send($arr[$i])
 		Send("{ENTER}")
@@ -223,7 +243,7 @@ Func copyRangeFromExcel($file, $start_col, $start_row, $end_col, $end_row)
 	activateExcel($file)
 	$width = ltr2num($end_col) - ltr2num($start_col) 
 	$height = $end_row - $start_row
-	gotoCellExcel($start_row, $start_col)
+	gotoCellExcel($start_col, $start_row)
 	For $i = 0 To $width - 1
 		Send("+{RIGHT}")
 	Next
@@ -256,7 +276,7 @@ Func ltr2num($letter)
 EndFunc
 
 Func sortExcelCol($col)
-	gotoCellExcel(1, $col)
+	gotoCellExcel($col, 1)
 	Send("!hss")
 EndFunc
 
@@ -345,3 +365,11 @@ Func _Log($msg, $type="")
 	$logmsg &= '{' & @CRLF & '"time" : "' & @HOUR & ':' & @MIN & ':' & @SEC & ':' & @MSEC & '", "type" : "' & $type & '", "message" : "' & $msg & '"' & @CRLF & '}'
 	FileWrite($LOG_FILE_NAME, $logmsg)
 EndFunc
+
+; Func queryTrax($query, $output)
+; 	$header = "set colsep '|'\nset echo off\nset feedback off\nset linesize 1000\nset pagesize 0\nset sqlprompt ''\nset trimspool on\nset headsep off"
+; 	$spool = "spool " & $output & ";\n" & $query & "\n\nspool off;"
+; 	$cmd = $header & $spool
+; 	; RunWait(@ComSpec & " /c " & "echo " & $cmd & " | sqlplus TRAX_RPT_USER/TRAXRPTUSER99@TRAX3EP")
+; 	RunWait(@ComSpec & " /c " & "@echo spool output.dat; SELECT SUM(QTY_AVAILABLE * UNIT_COST) FROM ODB.PN_INVENTORY_DETAIL WHERE LOCATION='IND-AAR'; spool off; | sqlplus -s TRAX_RPT_USER/TRAXRPTUSER99@TRAX3EP")
+; EndFunc
